@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Solar System Explorer — HD WEB STUDIOS</title>
+<meta name="description" content="An interactive, cinematic Solar System explorer built with HTML, CSS & JavaScript by HD WEB STUDIOS." />
+
+<!-- Fonts: Space Grotesk (display / HUD), Inter (body), IBM Plex Mono (data readouts) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============ STARFIELD & AMBIENT SPACE LAYERS (populated by JS) ============ -->
+  <div id="starfield" aria-hidden="true"></div>
+  <div id="nebula" aria-hidden="true"></div>
+  <div id="shooting-stars" aria-hidden="true"></div>
+
+  <!-- ============ BRANDING — HD WEB STUDIOS (top-left signature) ============ -->
+  <header class="brand-mark" id="brandMark">
+    <img class="brand-logo" src="https://hdwebstudios.in/logo.png" alt="HD WEB STUDIOS logo" onerror="this.style.display='none'; this.parentElement.classList.add('logo-fallback');" />
+    <div class="brand-text">
+      <span class="brand-name">HD WEB STUDIOS</span>
+      <span class="brand-tag">Web Development • Creative Digital Solutions</span>
+    </div>
+  </header>
+
+  <!-- ============ HUD TITLE (top area) ============ -->
+  <div class="hud-title" id="hudTitle">
+    <span class="hud-eyebrow">MISSION VIEW // HELIOCENTRIC</span>
+    <h1 class="hud-heading">Explore the Solar System <span class="rocket">🚀</span></h1>
+    <p class="hud-sub">Hover a world for a quick read. Tap one to lock on.</p>
+  </div>
+
+  <!-- ============ MAIN SOLAR SYSTEM SCENE ============ -->
+  <main id="scene">
+    <div id="galaxy">
+
+      <!-- Sun -->
+      <div class="sun" id="sun">
+        <div class="sun-core"></div>
+        <div class="sun-flare"></div>
+      </div>
+
+      <!-- Orbit rings + planets are injected by script.js from PLANET_DATA -->
+      <div id="orbits-root"></div>
+
+    </div>
+  </main>
+
+  <!-- ============ HOVER TOOLTIP (follows planet on hover) ============ -->
+  <div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true">
+    <div class="tooltip-head">
+      <span class="tooltip-swatch" id="ttSwatch"></span>
+      <span class="tooltip-name" id="ttName">—</span>
+    </div>
+    <p class="tooltip-desc" id="ttDesc">—</p>
+    <div class="tooltip-stats">
+      <div><span class="k">Distance</span><span class="v" id="ttDistance">—</span></div>
+      <div><span class="k">Orbital period</span><span class="v" id="ttPeriod">—</span></div>
+    </div>
+  </div>
+
+  <!-- ============ SELECTED PLANET — DETAIL PANEL ============ -->
+  <aside id="detailPanel" class="detail-panel" aria-hidden="true">
+    <button id="closeDetail" class="close-btn" aria-label="Close panel">✕</button>
+    <div class="detail-head">
+      <span class="detail-swatch" id="dSwatch"></span>
+      <div>
+        <span class="detail-eyebrow">TARGET LOCKED</span>
+        <h2 class="detail-name" id="dName">—</h2>
+      </div>
+    </div>
+    <p class="detail-desc" id="dDesc">—</p>
+    <div class="detail-grid">
+      <div class="detail-stat"><span class="k">Distance from Sun</span><span class="v" id="dDistance">—</span></div>
+      <div class="detail-stat"><span class="k">Orbital period</span><span class="v" id="dPeriod">—</span></div>
+      <div class="detail-stat"><span class="k">Diameter</span><span class="v" id="dDiameter">—</span></div>
+      <div class="detail-stat"><span class="k">Moons</span><span class="v" id="dMoons">—</span></div>
+    </div>
+    <button id="resetFromPanel" class="ghost-btn">Reset view</button>
+  </aside>
+
+  <!-- ============ DIM OVERLAY when a planet is focused ============ -->
+  <div id="focusOverlay" class="focus-overlay"></div>
+
+  <!-- ============ CONTROL DECK (speed / pause / reset) ============ -->
+  <div class="control-deck" id="controlDeck">
+    <div class="deck-group">
+      <span class="deck-label">Speed</span>
+      <div class="speed-buttons" role="group" aria-label="Orbit speed presets">
+        <button class="speed-btn" data-speed="0.5">0.5×</button>
+        <button class="speed-btn is-active" data-speed="1">1×</button>
+        <button class="speed-btn" data-speed="2">2×</button>
+        <button class="speed-btn" data-speed="5">5×</button>
+      </div>
+      <input type="range" id="speedSlider" class="speed-slider" min="0.1" max="6" step="0.1" value="1" aria-label="Fine speed control" />
+    </div>
+    <div class="deck-group deck-actions">
+      <button id="pauseBtn" class="deck-btn primary">
+        <span class="icon" id="pauseIcon">❚❚</span>
+        <span id="pauseLabel">Pause</span>
+      </button>
+      <button id="resetBtn" class="deck-btn">
+        <span class="icon">↺</span>
+        <span>Reset</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ CONTACT / FOOTER SIGNATURE ============ -->
+  <footer class="contact-panel" id="contactPanel">
+    <button class="contact-toggle" id="contactToggle" aria-expanded="false">
+      <span class="dot"></span> Created by HD WEB STUDIOS
+    </button>
+    <div class="contact-body" id="contactBody">
+      <strong>HD WEB STUDIOS</strong>
+      <a href="https://hdwebstudios.in" target="_blank" rel="noopener">hdwebstudios.in</a>
+      <a href="tel:7589434135">7589434135</a>
+      <a href="mailto:harshdeepdeveloper@gmail.com">harshdeepdeveloper@gmail.com</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
